@@ -4,11 +4,11 @@
 @import "https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100..900&display=swap";
 :root {
   --body-font:
-    Inter, "Noto Sans SC", "Noto Sans TC", "Segoe UI", Roboto, "Helvetica Neue",
-    "Liberation Sans", Arial, sans-serif;
+    Inter, "Noto Sans SC", "Noto Sans TC", "Segoe UI", Roboto, "Helvetica Neue", "Liberation Sans",
+    Arial, sans-serif;
   --mono-font:
-    "JetBrains Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
-    "Noto Sans SC", "Noto Sans TC", monospace;
+    "JetBrains Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", "Noto Sans SC",
+    "Noto Sans TC", monospace;
   --body-font-size: clamp(0.825rem, calc(0.775rem + 0.195vw), 1rem);
   --body-line-height: 1.5;
   --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -47,8 +47,7 @@ html {
   -webkit-text-size-adjust: 100%;
   -webkit-tap-highlight-color: transparent;
   scrollbar-width: thin;
-  scrollbar-color: rgb(var(--scrollbar-thumb-color))
-    rgb(var(--scrollbar-track-color));
+  scrollbar-color: rgb(var(--scrollbar-thumb-color)) rgb(var(--scrollbar-track-color));
 }
 body {
   background: rgb(var(--bg-color));
@@ -56,7 +55,6 @@ body {
   font-family: var(--body-font);
   font-size: var(--body-font-size);
   line-height: var(--body-line-height);
-  overflow-wrap: break-word;
   box-sizing: border-box;
   display: flex;
   flex-wrap: wrap;
@@ -79,27 +77,27 @@ body {
   background: rgb(var(--selection-bg-color));
   color: rgb(var(--selection-text-color));
 }
-#input {
+#input,
+#output {
   appearance: none;
   font: inherit;
-  box-sizing: border-box;
+  font-family: var(--mono-font);
   border-radius: 0;
   outline: 0;
   margin: 0;
+  box-sizing: border-box;
   resize: none;
-}
-#input, #output {
   background: rgb(var(--bg-color));
-  max-width: 100%;
   color: rgb(var(--text-color));
   border: var(--border);
+  flex: 40vh;
+  padding: 0.25em 0.5em;
+}
+#input {
   box-shadow: 0 0 0 0 rgb(var(--focus-bg-color));
   transition:
     box-shadow var(--transition),
     border-color var(--transition);
-  flex: 40vh;
-  margin: 0;
-  padding: 0 0.25em;
 }
 #input:focus-visible {
   box-shadow: 0 0 0 0.125em rgb(var(--focus-bg-color));
