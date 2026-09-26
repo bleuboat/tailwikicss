@@ -1,8 +1,3 @@
-@import "https://fonts.googleapis.com/css2?family=Lexend:wght@400;700&display=swap";
-@import "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap";
-@import "https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400&display=swap";
-@import "https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400&display=swap";
-
 :root {
   --body-font:
     Lexend, "Noto Sans SC", "Noto Sans TC", "Segoe UI", Roboto, "Helvetica Neue", "Liberation Sans",
