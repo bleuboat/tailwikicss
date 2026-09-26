@@ -1,10 +1,11 @@
-@import "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap";
-@import "https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap";
-@import "https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@100..900&display=swap";
-@import "https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100..900&display=swap";
+@import "https://fonts.googleapis.com/css2?family=Lexend:wght@700&display=swap";
+@import "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap";
+@import "https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400&display=swap";
+@import "https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400&display=swap";
+
 :root {
   --body-font:
-    Inter, "Noto Sans SC", "Noto Sans TC", "Segoe UI", Roboto, "Helvetica Neue", "Liberation Sans",
+    Lexend, "Noto Sans SC", "Noto Sans TC", "Segoe UI", Roboto, "Helvetica Neue", "Liberation Sans",
     Arial, sans-serif;
   --mono-font:
     "JetBrains Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", "Noto Sans SC",
@@ -43,6 +44,7 @@
   --scrollbar-thumb-color: var(--dark-bg-color), 0.4;
   --border: 0.0625rem solid rgb(var(--base-black), 0.25);
 }
+
 html {
   -webkit-text-size-adjust: 100%;
   -webkit-tap-highlight-color: transparent;
@@ -55,12 +57,9 @@ body {
   font-family: var(--body-font);
   font-size: var(--body-font-size);
   line-height: var(--body-line-height);
-  box-sizing: border-box;
   display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
+  flex-direction: column;
   height: 100vh;
-  padding: 1rem;
   margin: 0;
 }
 ::-webkit-scrollbar {
@@ -77,21 +76,62 @@ body {
   background: rgb(var(--selection-bg-color));
   color: rgb(var(--selection-text-color));
 }
-#input,
-#output {
+button,
+textarea {
   appearance: none;
   font: inherit;
-  font-family: var(--mono-font);
   border-radius: 0;
   outline: 0;
   margin: 0;
   box-sizing: border-box;
+}
+button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  padding: 0.375em 0.75em;
+  border: 0;
+  background: rgb(var(--light-bg-color));
+  color: rgb(var(--light-text-color));
+  transition:
+    background var(--transition),
+    color var(--transition);
+}
+button:is(:hover, :active, :focus) {
+  background: rgb(var(--medium-bg-color));
+  color: rgb(var(--medium-text-color));
+}
+textarea {
+  font-family: var(--mono-font);
   resize: none;
   background: rgb(var(--bg-color));
   color: rgb(var(--text-color));
   border: var(--border);
   flex: 40vh;
   padding: 0.25em 0.5em;
+}
+
+#topbar {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 0.5rem;
+  box-sizing: border-box;
+}
+#editor {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0 0.5rem 0.5rem;
+  height: 100%;
+  box-sizing: border-box;
+}
+#title {
+  font-size: 2em;
+  font-weight: 700;
 }
 #input {
   box-shadow: 0 0 0 0 rgb(var(--focus-bg-color));

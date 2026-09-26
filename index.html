@@ -5,10 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tailwiki CSS 工具</title>
     <script type="module" src="/src/main.ts"></script>
-    <link rel="stylesheet" href="/src/style.css">
   </head>
   <body>
-    <textarea id="input" placeholder="在此输入页面代码……"></textarea>
-    <textarea id="output" readonly></textarea>
+    <div id="topbar">
+      <span id="title">Tailwiki CSS</span>
+      <button id="copy" data-clipboard-target="#output">复制结果</button>
+    </div>
+    <div id="editor">
+      <textarea id="input" placeholder="在此输入页面代码……"></textarea>
+      <textarea id="output" readonly></textarea>
+    </div>
   </body>
 </html>
