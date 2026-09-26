@@ -7,23 +7,6 @@
     ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
     monospace;
 
-  /*
-
---font-sans:
---p-font-sans-serif
---body-font
-
---font-serif:
---p-font-serif
---mono-font
-
---font-mono:
---p-font-monospace
---mono-font
---code-font
-
-*/
-
   --color-red-50: oklch(97.1% 0.013 17.38);
   --color-red-100: oklch(93.6% 0.032 17.717);
   --color-red-200: oklch(88.5% 0.062 18.334);

@@ -9,11 +9,21 @@
   <body>
     <div id="topbar">
       <span id="title">Tailwiki CSS</span>
-      <button id="copy" data-clipboard-target="#output">复制结果</button>
+      <button id="copy" data-clipboard-target="#output">复制代码</button>
     </div>
     <div id="editor">
-      <textarea id="input" placeholder="在此输入页面代码……"></textarea>
-      <textarea id="output" readonly></textarea>
+      <div class="edit-area">
+        输入：
+        <textarea id="input" placeholder="在此输入页面代码……"></textarea>
+      </div>
+      <div class="edit-area">
+        <div id="output-bar">
+          <span>输出：</span>
+          <input type="checkbox" id="only-css">
+          <label for="only-css">仅输出 CSS</label>
+        </div>
+        <textarea id="output" readonly></textarea>
+      </div>
     </div>
   </body>
 </html>

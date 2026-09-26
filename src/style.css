@@ -1,4 +1,4 @@
-@import "https://fonts.googleapis.com/css2?family=Lexend:wght@700&display=swap";
+@import "https://fonts.googleapis.com/css2?family=Lexend:wght@400;700&display=swap";
 @import "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap";
 @import "https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400&display=swap";
 @import "https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400&display=swap";
@@ -108,8 +108,8 @@ textarea {
   background: rgb(var(--bg-color));
   color: rgb(var(--text-color));
   border: var(--border);
-  flex: 40vh;
   padding: 0.25em 0.5em;
+  flex: 1;
 }
 
 #topbar {
@@ -129,6 +129,11 @@ textarea {
   height: 100%;
   box-sizing: border-box;
 }
+.edit-area {
+  display: flex;
+  flex-direction: column;
+  flex: 40vh;
+}
 #title {
   font-size: 2em;
   font-weight: 700;
@@ -142,4 +147,10 @@ textarea {
 #input:focus-visible {
   box-shadow: 0 0 0 0.125em rgb(var(--focus-bg-color));
   border-color: rgb(var(--focus-bg-color));
+}
+#output-bar {
+  display: flex;
+}
+#output-bar > span {
+  flex: 1;
 }
