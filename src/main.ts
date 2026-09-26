@@ -51,7 +51,7 @@ input.addEventListener("input", async () => {
   build();
 });
 
-onlyCSS.addEventListener("click", build)
+onlyCSS.addEventListener("click", build);
 
 const source = localStorage.getItem("source");
 if (source) {

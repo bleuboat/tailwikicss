@@ -61,6 +61,8 @@ body {
   flex-direction: column;
   height: 100vh;
   margin: 0;
+  padding: 0 0.5rem 0.5rem;
+  box-sizing: border-box;
 }
 ::-webkit-scrollbar {
   width: 0.5rem;
@@ -117,22 +119,17 @@ textarea {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 0.5rem;
-  box-sizing: border-box;
 }
 #editor {
   flex: 1;
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-  padding: 0 0.5rem 0.5rem;
-  height: 100%;
-  box-sizing: border-box;
 }
 .edit-area {
   display: flex;
   flex-direction: column;
-  flex: 40vh;
+  flex: 45vh;
 }
 #title {
   font-size: 2em;
