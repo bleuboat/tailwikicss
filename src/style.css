@@ -37,7 +37,7 @@
   --selection-text-color: var(--focus-text-color);
   --scrollbar-track-color: var(--medium-bg-color), 0.2;
   --scrollbar-thumb-color: var(--dark-bg-color), 0.4;
-  --border: 0.0625rem solid rgb(var(--base-black), 0.25);
+  --border: 0.0625rem solid rgb(var(--base-black), 0.125);
 }
 
 html {
