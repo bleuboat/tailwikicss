@@ -51,9 +51,9 @@ ${directives ? directives[0] + "\n" : ""}${outputCSS}
 }
 
 async function build(): Promise<void> {
-  const contents = input.value.split("====\n");
+  const contents = input.value.split("\n====\n");
   const out = contents.map(buildOne);
-  output.value = (await Promise.all(out)).join("====\n");
+  output.value = (await Promise.all(out)).join("\n====\n");
 }
 
 input.addEventListener("input", async () => {
