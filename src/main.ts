@@ -1,6 +1,6 @@
 import "./style.css";
 import { compile } from "tailwindcss";
-import tailwind from "./tailwind.css?raw";
+import tailwindcss from "./tailwind.css?raw";
 import ClipboardJS from "clipboard";
 
 const CLASS = /class="(.*?)"/g;
@@ -12,14 +12,15 @@ const onlyCSS = document.getElementById("only-css") as HTMLInputElement;
 new ClipboardJS("#copy");
 
 async function buildOne(source: string): Promise<string> {
-  let inputCSS = tailwind;
-
   const directives = source.match(TAILWIKICSS)?.[1].match(DIRECTIVES);
-  if (directives) {
-    inputCSS += directives[1];
-  }
+  const inputCSS = directives?.[1] ?? '@import "theme";';
 
-  const builder = compile(inputCSS);
+  const builder = compile(inputCSS, {
+    async loadStylesheet(id, base) {
+      const content = id.trim() === "theme" ? tailwindcss : "";
+      return { path: id, base, content };
+    },
+  });
 
   const classes = new Set<string>();
   for (const match of source.matchAll(CLASS)) {
@@ -28,26 +29,31 @@ async function buildOne(source: string): Promise<string> {
     }
   }
 
-  const outputCSS = (await builder)
-    .build([...classes])
-    .replaceAll(/\/\*.*?\*\//gs, "")
-    .replaceAll(/\s+/g, " ")
-    .replaceAll(/\s*([\{\}\+>~;:,])\s*/g, "$1")
-    .replaceAll(";}", "}")
-    .replaceAll(":root,:host", ":root")
-    .trim();
+  const outputCSS = builder
+    .then(value => value.build([...classes]))
+    .catch(_ => "")
+    .then(value => value
+      .replaceAll(/\/\*.*?\*\//gs, "")
+      .replaceAll(/\s+/g, " ")
+      .replaceAll(/\s*([\{\}\+>~;:,!])\s*/g, "$1")
+      .replaceAll(";}", "}")
+      .replaceAll(":root,:host", ":root")
+      .trim()
+    );
 
-  if (onlyCSS.checked) return outputCSS + "\n";
+  if (onlyCSS.checked) return outputCSS;
 
-  const code = outputCSS
+  return outputCSS.then(value =>
+    value
     ? `[[module CSS tailwikicss]]
-${directives ? directives[0] + "\n" : ""}${outputCSS}
+${directives ? directives[0] + "\n" : ""}${value}
 [[/module]]`
-    : "";
-
-  return TAILWIKICSS.test(source)
-    ? source.replace(TAILWIKICSS, code)
-    : code + (code ? "\n\n" : "") + source;
+    : ""
+  ).then(value =>
+    TAILWIKICSS.test(source)
+    ? source.replace(TAILWIKICSS, value)
+    : value + (value ? "\n\n" : "") + source
+  );
 }
 
 async function build(): Promise<void> {
