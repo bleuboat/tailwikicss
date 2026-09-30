@@ -30,30 +30,33 @@ async function buildOne(source: string): Promise<string> {
   }
 
   const outputCSS = builder
-    .then(value => value.build([...classes]))
-    .catch(_ => "")
-    .then(value => value
-      .replaceAll(/\/\*.*?\*\//gs, "")
-      .replaceAll(/\s+/g, " ")
-      .replaceAll(/\s*([\{\}\+>~;:,!])\s*/g, "$1")
-      .replaceAll(";}", "}")
-      .replaceAll(":root,:host", ":root")
-      .trim()
+    .then((value) => value.build([...classes]))
+    .catch((_) => "")
+    .then((value) =>
+      value
+        .replaceAll(/\/\*.*?\*\//gs, "")
+        .replaceAll(/\s+/g, " ")
+        .replaceAll(/\s*([\{\}\+>~;:,!])\s*/g, "$1")
+        .replaceAll(";}", "}")
+        .replaceAll(":root,:host", ":root")
+        .trim(),
     );
 
   if (onlyCSS.checked) return outputCSS;
 
-  return outputCSS.then(value =>
-    value
-    ? `[[module CSS tailwikicss]]
+  return outputCSS
+    .then((value) =>
+      value
+        ? `[[module CSS tailwikicss]]
 ${directives ? directives[0] + "\n" : ""}${value}
 [[/module]]`
-    : ""
-  ).then(value =>
-    TAILWIKICSS.test(source)
-    ? source.replace(TAILWIKICSS, value)
-    : value + (value ? "\n\n" : "") + source
-  );
+        : "",
+    )
+    .then((value) =>
+      TAILWIKICSS.test(source)
+        ? source.replace(TAILWIKICSS, value)
+        : value + (value ? "\n\n" : "") + source,
+    );
 }
 
 async function build(): Promise<void> {
