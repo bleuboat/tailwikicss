@@ -46,9 +46,9 @@ async function buildOne(source: string): Promise<string> {
 
   return outputCSS
     .then((value) =>
-      value
+      directives || value
         ? `[[module CSS tailwikicss]]
-${directives ? directives[0] + "\n" : ""}${value}
+${directives ? directives[0] + (value ? "\n" : "") : ""}${value}
 [[/module]]`
         : "",
     )
