@@ -2,7 +2,8 @@
   "name": "tailwikicss",
   "version": "0.0.0",
   "devDependencies": {
-    "prettier": "^3.9.9",
+    "oxfmt": "^0.71.0",
+    "oxlint": "^1.86.0",
     "typescript": "~6.0.3",
     "vite": "^8.3.1"
   },
@@ -11,7 +12,8 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "format": "prettier --write src"
+    "lint": "oxlint . --fix",
+    "format": "oxfmt src"
   },
   "type": "module",
   "dependencies": {

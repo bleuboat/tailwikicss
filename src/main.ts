@@ -31,12 +31,12 @@ async function buildOne(source: string): Promise<string> {
 
   const outputCSS = builder
     .then((value) => value.build([...classes]))
-    .catch((_) => "")
+    .catch(() => "")
     .then((value) =>
       value
         .replaceAll(/\/\*.*?\*\//gs, "")
         .replaceAll(/\s+/g, " ")
-        .replaceAll(/\s*([\{\}\+>~;:,!])\s*/g, "$1")
+        .replaceAll(/\s*([{}+>~;:,!])\s*/g, "$1")
         .replaceAll(";}", "}")
         .replaceAll(":root,:host", ":root")
         .trim(),
