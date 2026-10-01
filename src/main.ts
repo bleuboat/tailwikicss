@@ -17,7 +17,7 @@ async function buildOne(source: string): Promise<string> {
 
   const builder = compile(inputCSS, {
     async loadStylesheet(id, base) {
-      const content = id.trim() === "theme" ? tailwindcss : "";
+      const content = id === "theme" ? tailwindcss : "";
       return { path: id, base, content };
     },
   });
