@@ -51,16 +51,22 @@ async function build(): Promise<void> {
   const compiled = await Promise.all(contents.map(buildOne)).catch((e: Error) => [
     `Error: ${e.message}`,
   ]);
-  console.log(compiled.map(value => value.length).reduce((x, y) => x + y))
   output.value = compiled.join("\n====\n");
 }
 
-input.addEventListener("input", async () => {
+let timer: ReturnType<typeof setTimeout> | undefined;
+
+function buildDebounced(): void {
+  clearTimeout(timer);
+  timer = setTimeout(build, 100);
+};
+
+input.addEventListener("input", () => {
   localStorage.setItem("source", input.value);
-  build();
+  buildDebounced();
 });
 
-onlyCSS.addEventListener("click", build);
+onlyCSS.addEventListener("click", buildDebounced);
 
 const source = localStorage.getItem("source");
 if (source) {
