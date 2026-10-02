@@ -59,7 +59,7 @@ let timer: ReturnType<typeof setTimeout> | undefined;
 function buildDebounced(): void {
   clearTimeout(timer);
   timer = setTimeout(build, 100);
-};
+}
 
 input.addEventListener("input", () => {
   localStorage.setItem("source", input.value);
