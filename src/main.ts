@@ -1,26 +1,24 @@
 import "./style.css";
-import { compile } from "tailwindcss";
+import { compileAst } from "tailwindcss";
 import tailwindcss from "./tailwind.css?raw";
 import ClipboardJS from "clipboard";
+import { atRule, parse, toCSS } from "./ast";
 
 const CLASS = /class="(.*?)"/g;
 const TAILWIKICSS = /^\[\[module CSS tailwikicss\]\]$(.*?)^\[\[\/module\]\]$/ims;
 const DIRECTIVES = /\/\*(.*?)\*\//s;
+const tailwindcssTheme = parse(tailwindcss)[0];
 const input = document.getElementById("input") as HTMLTextAreaElement;
 const output = document.getElementById("output") as HTMLTextAreaElement;
 const onlyCSS = document.getElementById("only-css") as HTMLInputElement;
 new ClipboardJS("#copy");
 
 async function buildOne(source: string): Promise<string> {
-  const directives = source.match(TAILWIKICSS)?.[1].match(DIRECTIVES);
-  const inputCSS = directives?.[1] ?? '@import "theme";';
+  const tailwindcssAst = [tailwindcssTheme, atRule("@tailwind", "utilities", [])];
 
-  const builder = compile(inputCSS, {
-    async loadStylesheet(id, base) {
-      const content = id === "theme" ? tailwindcss : "";
-      return { path: id, base, content };
-    },
-  });
+  const directives = source.match(TAILWIKICSS)?.[1]?.match(DIRECTIVES);
+
+  const builder = compileAst(parse(directives?.[1] ?? "").concat(tailwindcssAst));
 
   const classes = new Set<string>();
   for (const match of source.matchAll(CLASS)) {
@@ -29,22 +27,11 @@ async function buildOne(source: string): Promise<string> {
     }
   }
 
-  const outputCSS = builder
-    .then((value) => value.build([...classes]))
-    .catch(() => "")
-    .then((value) =>
-      value
-        .replaceAll(/\/\*.*?\*\//gs, "")
-        .replaceAll(/\s+/g, " ")
-        .replaceAll(/\s*([{}+>~;:,!])\s*/g, "$1")
-        .replaceAll(";}", "}")
-        .replaceAll(":root,:host", ":root")
-        .trim(),
-    );
+  const css = builder.then((value) => toCSS(value.build([...classes])).replaceAll(/\s+/g, " "));
 
-  if (onlyCSS.checked) return outputCSS;
+  if (onlyCSS.checked) return css;
 
-  return outputCSS
+  return css
     .then((value) =>
       directives || value
         ? `[[module CSS tailwikicss]]
@@ -61,8 +48,11 @@ ${directives ? directives[0] + (value ? "\n" : "") : ""}${value}
 
 async function build(): Promise<void> {
   const contents = input.value.split("\n====\n");
-  const out = contents.map(buildOne);
-  output.value = (await Promise.all(out)).join("\n====\n");
+  const compiled = await Promise.all(contents.map(buildOne)).catch((e: Error) => [
+    `Error: ${e.message}`,
+  ]);
+  console.log(compiled.map(value => value.length).reduce((x, y) => x + y))
+  output.value = compiled.join("\n====\n");
 }
 
 input.addEventListener("input", async () => {
