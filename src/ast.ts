@@ -108,6 +108,13 @@ export function decl(property: string, value: string | undefined, important = fa
   };
 }
 
+class CssSyntaxError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "CssSyntaxError";
+  }
+}
+
 function stringify(node: AstNode, depth: number): string {
   const indent = "  ".repeat(depth);
   switch (node.kind) {
@@ -244,7 +251,7 @@ export function parse(input: string): AstNode[] {
 
       let declaration = parseDeclaration(buffer, colonIdx);
       if (!declaration) {
-        throw new Error(`Invalid custom property, expected a value`);
+        throw new CssSyntaxError(`Invalid custom property, expected a value`);
       }
 
       if (parent) {
@@ -272,7 +279,7 @@ export function parse(input: string): AstNode[] {
       let declaration = parseDeclaration(buffer);
       if (!declaration) {
         if (buffer.length === 0) continue;
-        throw new Error(`Invalid declaration: \`${buffer.trim()}\``);
+        throw new CssSyntaxError(`Invalid declaration: \`${buffer.trim()}\``);
       }
 
       if (parent) {
@@ -305,7 +312,7 @@ export function parse(input: string): AstNode[] {
       closingBracketStack[closingBracketStack.length - 1] !== ")"
     ) {
       if (closingBracketStack === "") {
-        throw new Error("Missing opening {");
+        throw new CssSyntaxError("Missing opening {");
       }
 
       closingBracketStack = closingBracketStack.slice(0, -1);
@@ -328,7 +335,7 @@ export function parse(input: string): AstNode[] {
           if (parent) {
             let node = parseDeclaration(buffer, colonIdx);
             if (!node) {
-              throw new Error(`Invalid declaration: \`${buffer.trim()}\``);
+              throw new CssSyntaxError(`Invalid declaration: \`${buffer.trim()}\``);
             }
 
             parent.nodes.push(node);
@@ -351,7 +358,7 @@ export function parse(input: string): AstNode[] {
       buffer += "(";
     } else if (currentChar === CLOSE_PAREN) {
       if (closingBracketStack[closingBracketStack.length - 1] !== ")") {
-        throw new Error("Missing opening (");
+        throw new CssSyntaxError("Missing opening (");
       }
 
       closingBracketStack = closingBracketStack.slice(0, -1);
@@ -376,11 +383,11 @@ export function parse(input: string): AstNode[] {
 
   if (closingBracketStack.length > 0 && parent) {
     if (parent.kind === "rule") {
-      throw new Error(`Missing closing } at ${parent.selector}`);
+      throw new CssSyntaxError(`Missing closing } at ${parent.selector}`);
     }
 
     if (parent.kind === "at-rule") {
-      throw new Error(`Missing closing } at ${parent.name} ${parent.params}`);
+      throw new CssSyntaxError(`Missing closing } at ${parent.name} ${parent.params}`);
     }
   }
 
@@ -431,14 +438,14 @@ function parseString(input: string, startIdx: number, quoteChar: number): number
       (input.charCodeAt(i + 1) === LINE_BREAK ||
         (input.charCodeAt(i + 1) === CARRIAGE_RETURN && input.charCodeAt(i + 2) === LINE_BREAK))
     ) {
-      throw new Error(
+      throw new CssSyntaxError(
         `Unterminated string: ${input.slice(startIdx, i + 1) + String.fromCharCode(quoteChar)}`,
       );
     } else if (
       peekChar === LINE_BREAK ||
       (peekChar === CARRIAGE_RETURN && input.charCodeAt(i + 1) === LINE_BREAK)
     ) {
-      throw new Error(
+      throw new CssSyntaxError(
         `Unterminated string: ${input.slice(startIdx, i) + String.fromCharCode(quoteChar)}`,
       );
     }

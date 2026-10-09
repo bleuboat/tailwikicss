@@ -65,7 +65,7 @@ ${theme ? theme[0] + (value ? "\n" : "") : ""}${value}
 async function build(): Promise<void> {
   const contents = input.value.split("\n====\n");
   const compiled = await Promise.all(contents.map(buildOne)).catch((e: Error) => [
-    `Error: ${e.message}`,
+    `${e.name}: ${e.message}`,
   ]);
   output.value = compiled.join("\n====\n");
 }
@@ -87,13 +87,13 @@ onlyCSS.addEventListener("click", () => {
 });
 
 const source = localStorage.getItem("source");
-if (source !== null) {
+if (source === null) {
+  localStorage.setItem("source", input.value);
+  localStorage.setItem("minify-css", minifyCSS.checked ? "1" : "");
+  localStorage.setItem("only-css", onlyCSS.checked ? "1" : "");
+} else {
   input.value = source;
   minifyCSS.checked = !!localStorage.getItem("minify-css");
   onlyCSS.checked = !!localStorage.getItem("only-css");
   build();
-} else {
-  localStorage.setItem("source", input.value);
-  localStorage.setItem("minify-css", minifyCSS.checked ? "1" : "");
-  localStorage.setItem("only-css", onlyCSS.checked ? "1" : "");
 }
