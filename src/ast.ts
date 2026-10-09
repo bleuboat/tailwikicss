@@ -1,6 +1,5 @@
 const BACKSLASH = 0x5c;
 const SLASH = 0x2f;
-const ASTERISK = 0x2a;
 const DOUBLE_QUOTE = 0x22;
 const SINGLE_QUOTE = 0x27;
 const COLON = 0x3a;
@@ -17,7 +16,6 @@ const OPEN_BRACKET = 0x5b;
 const CLOSE_BRACKET = 0x5d;
 const DASH = 0x2d;
 const AT_SIGN = 0x40;
-const EXCLAMATION_MARK = 0x21;
 
 type StyleRule = {
   kind: "rule";
@@ -110,27 +108,25 @@ export function decl(property: string, value: string | undefined, important = fa
   };
 }
 
-export function stringify(node: AstNode): string {
+function stringify(node: AstNode, depth: number): string {
+  const indent = "  ".repeat(depth);
   switch (node.kind) {
     case "declaration":
-      return `${node.property}:${node.value}${node.important ? "!important" : ""}`;
+      return `${indent}${node.property}: ${node.value}${node.important ? " !important" : ""};\n`;
     case "rule":
-      return `${node.selector}{${toCSS(node.nodes)}}`;
+      return `${indent}${node.selector} {
+${node.nodes.map((child) => stringify(child, depth + 1)).join("")}${indent}}\n`;
     case "at-rule":
-      if (node.nodes.length === 0) return `${node.name} ${node.params}`;
-      return `${node.name}${node.params ? ` ${node.params}` : ""}{${toCSS(node.nodes)}}`;
+      if (node.nodes.length === 0) return `${indent}${node.name} ${node.params};\n`;
+      return `${indent}${node.name}${node.params ? ` ${node.params} ` : " "}{
+${node.nodes.map((child) => stringify(child, depth + 1)).join("")}${indent}}\n`;
     default:
       return "";
   }
 }
 
-export function toCSS(nodes: AstNode[]): string {
-  const out: string[] = [];
-  nodes.map(stringify).forEach((v, i) => {
-    out.push(v);
-    if (v && !v.endsWith("}") && i !== nodes.length - 1) out.push(";");
-  });
-  return out.join("");
+export function toCSS(ast: AstNode[]): string {
+  return ast.map((node) => stringify(node, 0)).join("");
 }
 
 export function parse(input: string): AstNode[] {
@@ -159,11 +155,11 @@ export function parse(input: string): AstNode[] {
     if (currentChar === BACKSLASH) {
       buffer += input.slice(i, i + 2);
       i += 1;
-    } else if (currentChar === SLASH && input.charCodeAt(i + 1) === EXCLAMATION_MARK) {
+    } else if (currentChar === SLASH && input.charCodeAt(i + 1) === DASH) {
       for (let j = i + 2; j < input.length; j++) {
         peekChar = input.charCodeAt(j);
 
-        if (peekChar === EXCLAMATION_MARK && input.charCodeAt(j + 1) === SLASH) {
+        if (peekChar === DASH && input.charCodeAt(j + 1) === SLASH) {
           i = j + 1;
           break;
         }
@@ -204,11 +200,11 @@ export function parse(input: string): AstNode[] {
           j += 1;
         } else if (peekChar === SINGLE_QUOTE || peekChar === DOUBLE_QUOTE) {
           j = parseString(input, j, peekChar);
-        } else if (peekChar === SLASH && input.charCodeAt(j + 1) === ASTERISK) {
+        } else if (peekChar === SLASH && input.charCodeAt(j + 1) === DASH) {
           for (let k = j + 2; k < input.length; k++) {
             peekChar = input.charCodeAt(k);
 
-            if (peekChar === ASTERISK && input.charCodeAt(k + 1) === SLASH) {
+            if (peekChar === DASH && input.charCodeAt(k + 1) === SLASH) {
               j = k + 1;
               break;
             }

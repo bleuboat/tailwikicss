@@ -1,12 +1,15 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-Hans-CN">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;700&family=JetBrains+Mono:wght@400&family=Noto+Sans+SC:wght@400&family=Noto+Sans+TC:wght@400&display=swap">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;700&family=JetBrains+Mono:wght@400&family=Noto+Sans+SC:wght@400&family=Noto+Sans+TC:wght@400&display=swap"
+    />
     <title>Tailwiki CSS 工具</title>
     <script type="module" src="/src/main.ts"></script>
   </head>
@@ -23,8 +26,10 @@
       <div class="edit-area">
         <div id="output-bar">
           <span>输出：</span>
-          <input type="checkbox" id="only-css">
-          <label for="only-css">仅输出生成的 CSS</label>
+          <input type="checkbox" id="minify-css" checked />
+          <label for="minify-css">最小化 CSS</label>
+          <input type="checkbox" id="only-css" />
+          <label for="only-css">仅输出 CSS</label>
         </div>
         <textarea id="output" readonly></textarea>
       </div>

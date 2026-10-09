@@ -499,4 +499,11 @@
   --default-mono-font-variation-settings: --theme(--font-mono--font-variation-settings, initial);
 }
 
-@tailwind utilities;
+@theme default inline reference {
+  --blur: 8px;
+  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-inner: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
+  --drop-shadow: 0 1px 2px rgb(0 0 0 / 0.1), 0 1px 1px rgb(0 0 0 / 0.06);
+  --radius: 0.25rem;
+  --max-width-prose: 65ch;
+}

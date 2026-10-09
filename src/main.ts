@@ -7,18 +7,21 @@ import { atRule, parse, toCSS } from "./ast";
 const CLASS = /class="(.*?)"/g;
 const TAILWIKICSS = /^\[\[module CSS tailwikicss\]\]$(.*?)^\[\[\/module\]\]$/ims;
 const DIRECTIVES = /\/\*(.*?)\*\//s;
-const tailwindcssTheme = parse(tailwindcss)[0];
+const tailwindcssTheme = parse(tailwindcss);
 const input = document.getElementById("input") as HTMLTextAreaElement;
 const output = document.getElementById("output") as HTMLTextAreaElement;
+const minifyCSS = document.getElementById("minify-css") as HTMLInputElement;
 const onlyCSS = document.getElementById("only-css") as HTMLInputElement;
 new ClipboardJS("#copy");
 
 async function buildOne(source: string): Promise<string> {
-  const tailwindcssAst = [tailwindcssTheme, atRule("@tailwind", "utilities", [])];
+  const directives = source.match(TAILWIKICSS)?.[1].match(DIRECTIVES);
 
-  const directives = source.match(TAILWIKICSS)?.[1]?.match(DIRECTIVES);
-
-  const builder = compileAst(parse(directives?.[1] ?? "").concat(tailwindcssAst));
+  const builder = compileAst([
+    ...parse(directives?.[1] ?? ""),
+    ...tailwindcssTheme,
+    atRule("@tailwind", "utilities", []),
+  ]);
 
   const classes = new Set<string>();
   for (const match of source.matchAll(CLASS)) {
@@ -27,7 +30,20 @@ async function buildOne(source: string): Promise<string> {
     }
   }
 
-  const css = builder.then((value) => toCSS(value.build([...classes])).replaceAll(/\s+/g, " "));
+  let css = builder.then((value) => toCSS(value.build([...classes])));
+
+  if (minifyCSS.checked) {
+    css = css.then((value) =>
+      value
+        .replaceAll(/\/\*.*?\*\//gs, "")
+        .replaceAll(/\s+/g, " ")
+        .replaceAll(/\s*([{}+>~;:,])\s*/g, "$1")
+        .replaceAll(";}", "}")
+        .replaceAll(":root,:host", ":root"),
+    );
+  }
+
+  css = css.then((value) => value.trim());
 
   if (onlyCSS.checked) return css;
 
@@ -66,10 +82,11 @@ input.addEventListener("input", () => {
   buildDebounced();
 });
 
-onlyCSS.addEventListener("click", buildDebounced);
+minifyCSS.addEventListener("click", build);
+onlyCSS.addEventListener("click", build);
 
 const source = localStorage.getItem("source");
-if (source) {
+if (source !== null) {
   input.value = source;
   build();
 }
