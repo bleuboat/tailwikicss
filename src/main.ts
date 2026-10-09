@@ -15,10 +15,10 @@ const onlyCSS = document.getElementById("only-css") as HTMLInputElement;
 new ClipboardJS("#copy");
 
 async function buildOne(source: string): Promise<string> {
-  const directives = source.match(TAILWIKICSS)?.[1].match(DIRECTIVES);
+  const theme = source.match(TAILWIKICSS)?.[1].match(DIRECTIVES);
 
   const builder = compileAst([
-    ...parse(directives?.[1] ?? ""),
+    ...parse(theme?.[1] ?? ""),
     ...tailwindcssTheme,
     atRule("@tailwind", "utilities", []),
   ]);
@@ -49,9 +49,9 @@ async function buildOne(source: string): Promise<string> {
 
   return css
     .then((value) =>
-      directives || value
+      theme || value
         ? `[[module CSS tailwikicss]]
-${directives ? directives[0] + (value ? "\n" : "") : ""}${value}
+${theme ? theme[0] + (value ? "\n" : "") : ""}${value}
 [[/module]]`
         : "",
     )
@@ -72,21 +72,28 @@ async function build(): Promise<void> {
 
 let timer: ReturnType<typeof setTimeout> | undefined;
 
-function buildDebounced(): void {
-  clearTimeout(timer);
-  timer = setTimeout(build, 100);
-}
-
 input.addEventListener("input", () => {
   localStorage.setItem("source", input.value);
-  buildDebounced();
+  clearTimeout(timer);
+  timer = setTimeout(build, 100);
 });
-
-minifyCSS.addEventListener("click", build);
-onlyCSS.addEventListener("click", build);
+minifyCSS.addEventListener("click", () => {
+  localStorage.setItem("minify-css", minifyCSS.checked ? "1" : "");
+  build();
+});
+onlyCSS.addEventListener("click", () => {
+  localStorage.setItem("only-css", onlyCSS.checked ? "1" : "");
+  build();
+});
 
 const source = localStorage.getItem("source");
 if (source !== null) {
   input.value = source;
+  minifyCSS.checked = !!localStorage.getItem("minify-css");
+  onlyCSS.checked = !!localStorage.getItem("only-css");
   build();
+} else {
+  localStorage.setItem("source", input.value);
+  localStorage.setItem("minify-css", minifyCSS.checked ? "1" : "");
+  localStorage.setItem("only-css", onlyCSS.checked ? "1" : "");
 }
